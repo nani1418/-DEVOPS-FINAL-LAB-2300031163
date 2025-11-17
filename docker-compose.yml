@@ -1,0 +1,26 @@
+﻿version: '3.8'
+
+services:
+  carrental-frontend:
+    container_name: carrental-frontend-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8080
+      - NODE_ENV=production
+    networks:
+      - carrental-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5173"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  carrental-network:
+    driver: bridge
